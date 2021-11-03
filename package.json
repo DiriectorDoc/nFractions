@@ -1,6 +1,6 @@
 {
   "name": "nfractions",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Fractions with BigInts",
   "main": "index.js",
   "scripts": {
