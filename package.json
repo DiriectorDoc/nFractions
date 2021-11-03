@@ -1,0 +1,24 @@
+{
+  "name": "nfractions",
+  "version": "0.0.1",
+  "description": "Fractions with BigInts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiriectorDoc/nFractions.git"
+  },
+  "keywords": [
+    "fractions",
+    "math",
+    "bigint"
+  ],
+  "author": "Diriector_Doc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DiriectorDoc/nFractions/issues"
+  },
+  "homepage": "https://github.com/DiriectorDoc/nFractions#readme"
+}
