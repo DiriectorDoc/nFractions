@@ -15,10 +15,13 @@ class Fraction {
                 numerator = numerator.toString();
             case "string":
                 if (numerator) {
-                    let numberMatch = /^(-?\d*)(\.(\d+))?$/, match = numberMatch.exec(numerator.trim());
-                    if (match) {
-                        numerator = BigInt(`${match[1]}${match[3] ?? ""}`);
-                        numExp = BigInt(match[3]?.length ?? 0);
+                    let match = Fraction.#parseNum(numerator.trim());
+                    if (match[1]) {
+                        numerator = BigInt(`${match[1]}${match[2] ?? ""}`);
+                        if (match[0] == "-") {
+                            numerator *= -1n;
+                        }
+                        numExp = BigInt(match[2]?.length ?? 0);
                     }
                     else if (numerator.includes("/")) {
                         numerator = Fraction.parseFraction(numerator);
@@ -41,14 +44,18 @@ class Fraction {
         if (denominator == 0) {
             throw new Fraction.ZeroDivisionError;
         }
+        denominator ||= 1n;
         switch (typeof denominator) {
             case "number":
                 denominator = denominator.toString();
             case "string":
-                let numberMatch = /^(-?\d*)(\.(\d+))?$/, match = numberMatch.exec(denominator.trim());
-                if (match) {
-                    denominator = BigInt(`${match[1]}${match[3] ?? ""}`);
-                    denExp = BigInt(match[3]?.length ?? 0);
+                let match = Fraction.#parseNum(denominator.trim());
+                if (match[1]) {
+                    denominator = BigInt(`${match[1]}${match[2] ?? ""}`);
+                    if (match[0] == "-") {
+                        denominator *= -1n;
+                    }
+                    denExp = BigInt(match[2]?.length ?? 0);
                 }
                 else {
                     try {
@@ -250,6 +257,19 @@ class Fraction {
                 return false;
         }
     }
+    static #parseNum(str) {
+        let match = /^(?<sign>[+-])?((?<b>0b[01]+)|(?<o>0o[0-7]+)|(?<x>0x[0-9a-f]+)|(((?<whole>\d+)(?<decimal>\.\d*)?)|(?<jdecimal>\.\d+)))$/gi.exec(str);
+        if (match) {
+            if (match.groups?.b || match.groups?.o || match.groups?.x) {
+                return [match.groups.sign, match.groups.b || match.groups.o || match.groups.x];
+            }
+            else if (match.groups?.whole) {
+                return [match.groups.sign, match.groups.whole || match.groups.jdecimal?.replace(".", ""), match.groups.decimal?.replace(".", "")];
+            }
+            return [];
+        }
+        return [];
+    }
     static ZeroDivisionError = class extends Error {
         constructor() {
             super("Cannot devide by 0");
@@ -288,8 +308,8 @@ class Fraction {
     ;
     static parseFraction(str) {
         if (typeof str == "string") {
-            let numberMatch = /^(-?\d*)(\.(\d+))?$/, parts = str.split("/"), match0 = numberMatch.exec(parts[0].trim()), match1 = numberMatch.exec(parts[1]?.trim());
-            return match0 && match1 ? new Fraction(match0[0], match1[0]) : Fraction.NaN;
+            let parts = str.split("/");
+            return parts[1] ? new Fraction(parts[0], parts[1]) : Fraction.NaN;
         }
         return Fraction.NaN;
     }
