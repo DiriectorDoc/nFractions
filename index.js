@@ -6,6 +6,9 @@ class Fraction {
     static get NaN() {
         return Fraction.#NaN;
     }
+    get [Symbol.toStringTag]() {
+        return "Fraction";
+    }
     constructor(numerator = 0n, denominator = 1n) {
         Fraction.#typeCheck(numerator, true);
         Fraction.#typeCheck(denominator, true);
@@ -37,6 +40,7 @@ class Fraction {
                     numerator = 0n;
                 }
             case "bigint":
+            case "object":
                 break;
             default:
                 throw new TypeError(`Cannot use value ${numerator} as a numerator`);
@@ -101,7 +105,7 @@ class Fraction {
         try {
             Fraction.#typeCheck(frac, true);
             let f1 = this.clone().reduce(), f2 = frac instanceof Fraction ? frac.clone().reduce() : new Fraction(frac).reduce();
-            return f1.#nNumerator == f2.numerator && f1.#nDenominator == f2.denominator;
+            return f1.#nNumerator == f2.#nNumerator && f1.#nDenominator == f2.#nDenominator;
         }
         catch {
             return false;
@@ -326,9 +330,6 @@ class Fraction {
     static random() {
         let den = Fraction.#randomBigInt();
         return new Fraction(Fraction.#randomBigInt(den), den);
-    }
-    get [Symbol.toStringTag]() {
-        return "Fraction";
     }
     static {
         Fraction.#NaN = (a => (
