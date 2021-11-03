@@ -71,6 +71,7 @@ class Fraction {
                     }
                 }
             case "bigint":
+            case "object":
                 break;
             default:
                 throw new TypeError(`Cannot use value ${denominator} as a denominator`);
