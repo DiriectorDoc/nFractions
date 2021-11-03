@@ -327,6 +327,9 @@ class Fraction {
         let den = Fraction.#randomBigInt();
         return new Fraction(Fraction.#randomBigInt(den), den);
     }
+    get [Symbol.toStringTag]() {
+        return "Fraction";
+    }
     static {
         Fraction.#NaN = (a => (
         // @ts-ignore
