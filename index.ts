@@ -222,7 +222,7 @@ class Fraction {
 
 	toString(type?: string): string {
 		switch(type){
-			case "regex":
+			case "latex":
 				return `\\frac{${this.#nNumerator}}{${this.#nDenominator}}`;
 			default:
 				return `${this.#nNumerator}/${this.#nDenominator}`
