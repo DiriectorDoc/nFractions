@@ -112,7 +112,7 @@ class Fraction {
         }
     }
     lt(frac) {
-        if (Fraction.#typeCheck(frac))
+        if (!Fraction.#typeCheck(frac))
             return false;
         if (frac == 0) {
             return this.isNegative;
@@ -120,7 +120,7 @@ class Fraction {
         return this.minus(frac).lt(0);
     }
     lteq(frac) {
-        if (Fraction.#typeCheck(frac))
+        if (!Fraction.#typeCheck(frac))
             return false;
         if (frac == 0) {
             return this.isNegative || this.#nNumerator == 0n;
@@ -128,7 +128,7 @@ class Fraction {
         return this.minus(frac).lteq(0);
     }
     gt(frac) {
-        if (Fraction.#typeCheck(frac))
+        if (!Fraction.#typeCheck(frac))
             return false;
         if (!(frac instanceof Fraction)) {
             frac = new Fraction(frac);
@@ -136,7 +136,7 @@ class Fraction {
         return frac.minus(this).lt(0);
     }
     gteq(frac) {
-        if (Fraction.#typeCheck(frac))
+        if (!Fraction.#typeCheck(frac))
             return false;
         if (!(frac instanceof Fraction)) {
             frac = new Fraction(frac);

@@ -116,7 +116,7 @@ class Fraction {
 	}
 
 	lt(frac: Fraction | bigint | number | string): boolean {
-		if(Fraction.#typeCheck(frac)) return false;
+		if(!Fraction.#typeCheck(frac)) return false;
 		if(frac == 0){
 			return this.isNegative
 		}
@@ -124,7 +124,7 @@ class Fraction {
 	}
 
 	lteq(frac: Fraction | bigint | number | string): boolean {
-		if(Fraction.#typeCheck(frac)) return false;
+		if(!Fraction.#typeCheck(frac)) return false;
 		if(frac == 0){
 			return this.isNegative || this.#nNumerator == 0n
 		}
@@ -132,7 +132,7 @@ class Fraction {
 	}
 
 	gt(frac: Fraction | bigint | number | string): boolean {
-		if(Fraction.#typeCheck(frac)) return false;
+		if(!Fraction.#typeCheck(frac)) return false;
 		if(!(frac instanceof Fraction)){
 			frac = new Fraction(frac)
 		}
@@ -140,7 +140,7 @@ class Fraction {
 	}
 
 	gteq(frac: Fraction | bigint | number | string): boolean {
-		if(Fraction.#typeCheck(frac)) return false;
+		if(!Fraction.#typeCheck(frac)) return false;
 		if(!(frac instanceof Fraction)){
 			frac = new Fraction(frac)
 		}
