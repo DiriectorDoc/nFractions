@@ -12,6 +12,12 @@ class Fraction {
     constructor(numerator = 0n, denominator = 1n) {
         Fraction.#typeCheck(numerator, true);
         Fraction.#typeCheck(denominator, true);
+        if (denominator === "") {
+            denominator = 1n;
+        }
+        if (denominator == 0) {
+            throw new Fraction.ZeroDivisionError;
+        }
         let numExp = 0n, denExp = 0n;
         switch (typeof numerator) {
             case "number":
@@ -19,12 +25,12 @@ class Fraction {
             case "string":
                 if (numerator) {
                     let match = Fraction.#parseNum(numerator.trim());
-                    if (match[1]) {
-                        numerator = BigInt(`${match[1]}${match[2] ?? ""}`);
-                        if (match[0] == "-") {
+                    if (match) {
+                        numerator = BigInt(`${match[1]}${match[2]}`);
+                        if (match[0]) {
                             numerator *= -1n;
                         }
-                        numExp = BigInt(match[2]?.length ?? 0);
+                        numExp = BigInt(match[2].length);
                     }
                     else if (numerator.includes("/")) {
                         numerator = Fraction.parseFraction(numerator);
@@ -45,21 +51,17 @@ class Fraction {
             default:
                 throw new TypeError(`Cannot use value ${numerator} as a numerator`);
         }
-        if (denominator == 0) {
-            throw new Fraction.ZeroDivisionError;
-        }
-        denominator ||= 1n;
         switch (typeof denominator) {
             case "number":
                 denominator = denominator.toString();
             case "string":
                 let match = Fraction.#parseNum(denominator.trim());
-                if (match[1]) {
-                    denominator = BigInt(`${match[1]}${match[2] ?? ""}`);
-                    if (match[0] == "-") {
+                if (match) {
+                    denominator = BigInt(`${match[1]}${match[2]}`);
+                    if (match[0]) {
                         denominator *= -1n;
                     }
-                    denExp = BigInt(match[2]?.length ?? 0);
+                    denExp = BigInt(match[2].length);
                 }
                 else {
                     try {
@@ -103,12 +105,11 @@ class Fraction {
     get isNegative() { return this.#nNumerator != 0n || this.#nNumerator < 0 != this.#nDenominator < 0; }
     get negative() { return new Fraction(-this.#nNumerator, this.#nDenominator); }
     eq(frac) {
-        try {
-            Fraction.#typeCheck(frac, true);
+        if (Fraction.#typeCheck(frac)) {
             let f1 = this.clone().reduce(), f2 = frac instanceof Fraction ? frac.clone().reduce() : new Fraction(frac).reduce();
             return f1.#nNumerator == f2.#nNumerator && f1.#nDenominator == f2.#nDenominator;
         }
-        catch {
+        else {
             return false;
         }
     }
@@ -228,6 +229,10 @@ class Fraction {
                 return `${this.#nNumerator}/${this.#nDenominator}`;
         }
     }
+    valueOf() {
+        // temporary
+        return Number(this.#nNumerator) / Number(this.#nDenominator);
+    }
     static #gcd(a, b) {
         a = a > 0 ? a : -a;
         b = b > 0 ? b : -b;
@@ -266,14 +271,24 @@ class Fraction {
         let match = /^(?<sign>[+-])?((?<b>0b[01]+)|(?<o>0o[0-7]+)|(?<x>0x[0-9a-f]+)|(((?<whole>\d+)(?<decimal>\.\d*)?)|(?<jdecimal>\.\d+)))$/gi.exec(str);
         if (match) {
             if (match.groups?.b || match.groups?.o || match.groups?.x) {
-                return [match.groups.sign, match.groups.b || match.groups.o || match.groups.x];
+                return [match.groups.sign == "-", match.groups.b || match.groups.o || match.groups.x, ""];
             }
-            else if (match.groups?.whole) {
-                return [match.groups.sign, match.groups.whole || match.groups.jdecimal?.replace(".", ""), match.groups.decimal?.replace(".", "")];
+            else if (match.groups?.whole || match.groups?.jdecimal) {
+                return [match.groups.sign == "-", match.groups.whole ?? "", (match.groups.decimal || match.groups.jdecimal)?.replace(".", "") ?? ""];
             }
-            return [];
+            return undefined;
         }
-        return [];
+        return undefined;
+    }
+    static #randomBigInt(max) {
+        let i = 30, bin = "0b1", result;
+        do {
+            bin += Math.round(Math.random());
+        } while (Math.round(Math.random() * 30) && i--);
+        result = BigInt(bin);
+        if (max)
+            result %= max;
+        return result;
     }
     static ZeroDivisionError = class extends Error {
         constructor() {
@@ -317,16 +332,6 @@ class Fraction {
             return parts[1] ? new Fraction(parts[0], parts[1]) : Fraction.NaN;
         }
         return Fraction.NaN;
-    }
-    static #randomBigInt(max) {
-        let i = 30, bin = "0b1", result;
-        do {
-            bin += Math.round(Math.random());
-        } while (Math.round(Math.random() * 30) && i--);
-        result = BigInt(bin);
-        if (max)
-            result %= max;
-        return result;
     }
     static random() {
         let den = Fraction.#randomBigInt();
