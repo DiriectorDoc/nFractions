@@ -18,7 +18,7 @@ class Fraction {
         if (denominator == 0) {
             throw new Fraction.ZeroDivisionError;
         }
-        let numExp = 0n, denExp = 0n;
+        let numExp = 0, denExp = 0;
         switch (typeof numerator) {
             case "number":
                 numerator = numerator.toString();
@@ -30,7 +30,7 @@ class Fraction {
                         if (match[0]) {
                             numerator *= -1n;
                         }
-                        numExp = BigInt(match[2].length);
+                        numExp = match[2].length;
                     }
                     else if (numerator.includes("/")) {
                         numerator = Fraction.parseFraction(numerator);
@@ -61,7 +61,7 @@ class Fraction {
                     if (match[0]) {
                         denominator *= -1n;
                     }
-                    denExp = BigInt(match[2].length);
+                    denExp = match[2].length;
                 }
                 else if (denominator.includes("/")) {
                     denominator = Fraction.parseFraction(denominator);
@@ -78,7 +78,7 @@ class Fraction {
             default:
                 throw new TypeError(`Cannot use value ${denominator} as a denominator`);
         }
-        [numExp, denExp] = [(numExp > denExp ? 1n : 10n ** (denExp - numExp)), (denExp > numExp ? 1n : 10n ** (numExp - denExp))];
+        [numExp, denExp] = [(numExp > denExp ? 1n : 10n ** BigInt(denExp - numExp)), (denExp > numExp ? 1n : 10n ** BigInt(numExp - denExp))];
         if (numerator instanceof Fraction) {
             if (denominator instanceof Fraction) {
                 this.#nNumerator = numerator.#nNumerator * denominator.#nDenominator;
