@@ -112,6 +112,9 @@ class Fraction {
             return false;
         }
     }
+    seq(frac) {
+        return frac instanceof Fraction && this.eq(frac);
+    }
     lt(frac) {
         if (!Fraction.#typeCheck(frac))
             return false;

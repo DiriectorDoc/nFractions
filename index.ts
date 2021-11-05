@@ -116,6 +116,10 @@ class Fraction {
 		}
 	}
 
+	seq(frac: Fraction | bigint | number | string): boolean {
+		return frac instanceof Fraction && this.eq(frac)
+	}
+
 	lt(frac: Fraction | bigint | number | string): boolean {
 		if(!Fraction.#typeCheck(frac)) return false;
 		if(frac == 0){
