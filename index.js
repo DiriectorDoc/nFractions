@@ -63,14 +63,14 @@ class Fraction {
                     }
                     denExp = BigInt(match[2].length);
                 }
+                else if (denominator.includes("/")) {
+                    denominator = Fraction.parseFraction(denominator);
+                    if (denominator.isNaN) {
+                        throw new TypeError(`Cannot parse "${denominator}" as a fraction`);
+                    }
+                }
                 else {
-                    try {
-                        denominator = new Fraction(denominator);
-                    }
-                    catch (err) {
-                        console.error(err);
-                        throw new TypeError(`Cannot use value "${denominator}" as a denominator`);
-                    }
+                    throw new TypeError(`Cannot use value "${denominator}" as a denominator`);
                 }
             case "bigint":
             case "object":
@@ -78,25 +78,24 @@ class Fraction {
             default:
                 throw new TypeError(`Cannot use value ${denominator} as a denominator`);
         }
+        [numExp, denExp] = [(numExp > denExp ? 1n : 10n ** (denExp - numExp)), (denExp > numExp ? 1n : 10n ** (numExp - denExp))];
         if (numerator instanceof Fraction) {
             if (denominator instanceof Fraction) {
-                let newFrac = new Fraction(numerator).divide(denominator);
-                this.#nNumerator = newFrac.#nNumerator * denominator.#nDenominator;
-                this.#nDenominator = newFrac.#nDenominator * denominator.#nNumerator;
+                this.#nNumerator = numerator.#nNumerator * denominator.#nDenominator;
+                this.#nDenominator = numerator.#nDenominator * denominator.#nNumerator;
             }
             else {
-                this.#nNumerator = numerator.#nNumerator;
+                this.#nNumerator = numerator.#nNumerator * numExp;
                 this.#nDenominator = numerator.#nDenominator * denominator;
             }
         }
         else if (denominator instanceof Fraction) {
-            let newFrac = new Fraction(numerator).divide(denominator);
-            this.#nNumerator = newFrac.#nNumerator;
-            this.#nDenominator = newFrac.#nDenominator;
+            this.#nNumerator = denominator.#nDenominator * numerator;
+            this.#nDenominator = denominator.#nNumerator * denExp;
         }
         else {
-            this.#nNumerator = numerator * (numExp > denExp ? 1n : 10n ** (denExp - numExp));
-            this.#nDenominator = denominator * (denExp > numExp ? 1n : 10n ** (numExp - denExp));
+            this.#nNumerator = numerator * numExp;
+            this.#nDenominator = denominator * denExp;
         }
     }
     get numerator() { return this.#nNumerator; }
