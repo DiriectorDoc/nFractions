@@ -4,7 +4,7 @@ Creates fractions using BigInts
 ## Syntax
 
 ```javascript
-new Fraction(   numerator,   denominator   )
+new Fraction(  numerator,  denominator  )
 ```
 
 * `numerator`: string, number, bigint, Fraction (default: 0)
