@@ -6,7 +6,8 @@ class Fraction {
 	#nNumerator: bigint;
 	#nDenominator: bigint;
 
-	static #NaN: Fraction;
+	// @ts-ignore
+	static #NaN: Fraction = new Fraction(NaN, NaN, Symbol("#Quick"));
 	static get NaN(): Fraction {
 		return Fraction.#NaN;
 	}
@@ -365,13 +366,5 @@ class Fraction {
 	static random(): Fraction {
 		let den = Fraction.#randomBigInt();
 		return new Fraction(Fraction.#randomBigInt(den), den, Symbol("#Quick"))
-	}
-
-	static {
-		Fraction.#NaN = (a => (
-			// @ts-ignore
-			a.#nDenominator = a.#nNumerator = NaN
-			, a
-		))(new Fraction)
 	}
 }
