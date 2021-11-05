@@ -9,7 +9,12 @@ class Fraction {
     get [Symbol.toStringTag]() {
         return "Fraction";
     }
-    constructor(numerator = 0n, denominator = 1n) {
+    constructor(numerator = 0n, denominator = 1n, quick) {
+        if (typeof quick == "symbol" && quick.toString() == "Symbol(#Quick)") {
+            this.#nNumerator = numerator;
+            this.#nDenominator = denominator;
+            return;
+        }
         Fraction.#typeCheck(numerator, true);
         Fraction.#typeCheck(denominator, true);
         if (denominator === "") {
@@ -102,7 +107,7 @@ class Fraction {
     get denominator() { return this.#nDenominator; }
     get isNaN() { return typeof this.#nNumerator != "bigint" || typeof this.#nDenominator != "bigint"; }
     get isNegative() { return this.#nNumerator != 0n || this.#nNumerator < 0 != this.#nDenominator < 0; }
-    get negative() { return new Fraction(-this.#nNumerator, this.#nDenominator); }
+    get negative() { return new Fraction(-this.#nNumerator, this.#nDenominator, Symbol("#Quick")); }
     eq(frac) {
         if (Fraction.#typeCheck(frac)) {
             let f1 = this.clone().reduce(), f2 = frac instanceof Fraction ? frac.clone().reduce() : new Fraction(frac).reduce();
@@ -165,7 +170,7 @@ class Fraction {
         return this;
     }
     get reciprocal() {
-        return new Fraction(this.#nDenominator, this.#nNumerator);
+        return new Fraction(this.#nDenominator, this.#nNumerator, Symbol("#Quick"));
     }
     reciprocate() {
         if (this.#nNumerator == 0n)
@@ -174,7 +179,7 @@ class Fraction {
         return this;
     }
     clone() {
-        return new Fraction(this);
+        return new Fraction(this.#nNumerator, this.#nDenominator, Symbol("#Quick"));
     }
     /*get mixed(): MixedFraction {
         let mixed: MixedFraction = Fraction.abs(this) as MixedFraction;
@@ -200,9 +205,9 @@ class Fraction {
     plus(addend) {
         Fraction.#typeCheck(addend, true);
         if (typeof addend != "object")
-            addend = new Fraction(addend);
+            addend = new Fraction(addend, 1n, Symbol("#Quick"));
         let lcmRatio = (this.#nDenominator * addend.#nDenominator) / Fraction.#lcm(this.#nDenominator, addend.#nDenominator);
-        return new Fraction((this.#nNumerator * addend.#nDenominator + addend.#nNumerator * this.#nDenominator) / lcmRatio, this.#nDenominator * addend.#nDenominator / lcmRatio);
+        return new Fraction((this.#nNumerator * addend.#nDenominator + addend.#nNumerator * this.#nDenominator) / lcmRatio, this.#nDenominator * addend.#nDenominator / lcmRatio, Symbol("#Quick"));
     }
     minus(subtrahend) {
         Fraction.#typeCheck(subtrahend, true);
@@ -213,7 +218,7 @@ class Fraction {
     times(multiplicand) {
         Fraction.#typeCheck(multiplicand, true);
         let multiplier = multiplicand instanceof Fraction ? multiplicand : new Fraction(multiplicand);
-        return (new Fraction(this.#nNumerator * multiplier.#nNumerator, this.#nDenominator * multiplier.#nDenominator)).reduce();
+        return new Fraction(this.#nNumerator * multiplier.#nNumerator, this.#nDenominator * multiplier.#nDenominator, Symbol("#Quick")).reduce();
     }
     divide(divisor) {
         Fraction.#typeCheck(divisor, true);
@@ -337,7 +342,7 @@ class Fraction {
     }
     static random() {
         let den = Fraction.#randomBigInt();
-        return new Fraction(Fraction.#randomBigInt(den), den);
+        return new Fraction(Fraction.#randomBigInt(den), den, Symbol("#Quick"));
     }
     static {
         Fraction.#NaN = (a => (
