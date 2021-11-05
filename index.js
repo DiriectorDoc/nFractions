@@ -2,7 +2,6 @@
 class Fraction {
     #nNumerator;
     #nDenominator;
-    // @ts-ignore
     static #NaN = new Fraction(NaN, NaN, Symbol("#Quick"));
     static get NaN() {
         return Fraction.#NaN;
