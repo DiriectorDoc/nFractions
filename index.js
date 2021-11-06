@@ -5,11 +5,12 @@ class Fraction {
     static get NaN() {
         return Fraction.#NaN;
     }
+    static #Quick = { [Symbol("#Quick")]: true };
     get [Symbol.toStringTag]() {
         return "Fraction";
     }
     constructor(numerator = 0n, denominator = 1n, quick) {
-        if (typeof quick == "symbol" && quick.toString() == "Symbol(#Quick)") {
+        if (Fraction.#Quick[quick]) {
             this.#nNumerator = numerator;
             this.#nDenominator = denominator;
             return;

@@ -8,12 +8,14 @@ class Fraction {
 		return Fraction.#NaN;
 	}
 
+	static #Quick = {[Symbol("#Quick")]:true};
+
 	get [Symbol.toStringTag](){
 		return "Fraction"
 	}
 
 	constructor(numerator: Fraction | bigint | number | string = 0n, denominator: Fraction | bigint | number | string = 1n, quick?: symbol){
-		if(typeof quick == "symbol" && quick.toString() == "Symbol(#Quick)"){
+		if(Fraction.#Quick[quick]){
 			this.#nNumerator = numerator as bigint
 			this.#nDenominator = denominator as bigint
 			return
