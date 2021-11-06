@@ -35,6 +35,7 @@ new Fraction(".111111111111111111111111111111111") //  = 11111111111111111111111
     * Returns the faction with a negated numerator. <u>Does not change the value of the variable.</u>
 * `.reciprocal`: Fraction
     * Returns the reciprical. <u>Does not change the value of the variable.</u>
+* `.whole`: BigInt
 
 ## Inequality/inequality
 * Equals

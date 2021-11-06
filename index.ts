@@ -1,6 +1,3 @@
-interface MixedFraction extends Fraction {
-	whole: bigint
-}
 class Fraction {
 
 	#nNumerator: bigint;
@@ -111,6 +108,8 @@ class Fraction {
 
 	get negative(){return new Fraction(-this.#nNumerator, this.#nDenominator, Symbol("#Quick"))}
 
+	get whole(){return this.#nNumerator/this.#nDenominator}
+
 	eq(frac: Fraction | bigint | number | string): boolean {
 		if(Fraction.#typeCheck(frac)){
 			let f1 = this.clone().reduce(),
@@ -188,23 +187,6 @@ class Fraction {
 	clone(): Fraction {
 		return new Fraction(this.#nNumerator, this.#nDenominator, Symbol("#Quick"))
 	}
-
-	/*get mixed(): MixedFraction {
-		let mixed: MixedFraction = Fraction.abs(this) as MixedFraction;
-		mixed.whole = 0n;
-		while(mixed.#nNumerator > mixed.#nDenominator){
-			mixed.#nNumerator -= mixed.#nDenominator;
-			if(this.isNegative){
-				mixed.whole--
-			} else {
-				mixed.whole++
-			}
-		}
-		if(!mixed.whole && this.isNegative){
-			mixed.#nNumerator *= -1n
-		}
-		return mixed
-	}*/
 
 	scaleTo(factor: bigint | number): this {
 		this.#nNumerator *= BigInt(factor);

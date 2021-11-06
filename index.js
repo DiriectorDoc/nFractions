@@ -1,4 +1,3 @@
-"use strict";
 class Fraction {
     #nNumerator;
     #nDenominator;
@@ -108,6 +107,7 @@ class Fraction {
     get isNaN() { return typeof this.#nNumerator != "bigint" || typeof this.#nDenominator != "bigint"; }
     get isNegative() { return this.#nNumerator != 0n || this.#nNumerator < 0 != this.#nDenominator < 0; }
     get negative() { return new Fraction(-this.#nNumerator, this.#nDenominator, Symbol("#Quick")); }
+    get whole() { return this.#nNumerator / this.#nDenominator; }
     eq(frac) {
         if (Fraction.#typeCheck(frac)) {
             let f1 = this.clone().reduce(), f2 = frac instanceof Fraction ? frac.clone().reduce() : new Fraction(frac).reduce();
@@ -181,22 +181,6 @@ class Fraction {
     clone() {
         return new Fraction(this.#nNumerator, this.#nDenominator, Symbol("#Quick"));
     }
-    /*get mixed(): MixedFraction {
-        let mixed: MixedFraction = Fraction.abs(this) as MixedFraction;
-        mixed.whole = 0n;
-        while(mixed.#nNumerator > mixed.#nDenominator){
-            mixed.#nNumerator -= mixed.#nDenominator;
-            if(this.isNegative){
-                mixed.whole--
-            } else {
-                mixed.whole++
-            }
-        }
-        if(!mixed.whole && this.isNegative){
-            mixed.#nNumerator *= -1n
-        }
-        return mixed
-    }*/
     scaleTo(factor) {
         this.#nNumerator *= BigInt(factor);
         this.#nDenominator *= BigInt(factor);
