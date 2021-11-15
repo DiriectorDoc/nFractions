@@ -117,9 +117,3 @@ Fraction.parseFraction("1/0")     // err: ZeroDivisionError
 Fraction.parseFraction(6)         // => NaN
 Fraction.parseFraction("foo")     // => NaN
 ```
-
-----
-## Extra functionality
-A third parameter may be entered into the constructor. If the third parameter is exactly `Symbol("#Quick")`, then the constructor will create the object much quicker. If any other value is inputed, it will be ignored. This input will make the constructer bypass all checks, and immediately set the numerator and denominator to the first and second parameter respectively.
-
-> **Warning:** Do not use this technique in production as it allows the values of the numerator and the denominator to be set to anything, not just BigInts.
