@@ -1,4 +1,4 @@
-class Fraction {
+export default class Fraction {
 
 	#nNumerator: bigint;
 	#nDenominator: bigint;

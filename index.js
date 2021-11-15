@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 class Fraction {
     #nNumerator;
     #nDenominator;
@@ -330,3 +331,4 @@ class Fraction {
         return new Fraction(Fraction.#randomBigInt(den), den, Fraction.#QuickKey);
     }
 }
+exports.default = Fraction;
