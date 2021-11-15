@@ -1,5 +1,5 @@
 {
-  "name": "nfractions",
+  "name": "@diriector_doc/nfractions",
   "version": "0.3.0",
   "description": "Fractions with BigInts",
   "main": "index.js",
