@@ -1,5 +1,7 @@
 # nFractions
-Creates fractions using BigInts
+Creates fractions using BigInts.
+
+
 
 ## Syntax
 
@@ -19,11 +21,12 @@ new Fraction("1/2")    //  = 1/2
 new Fraction(new Fraction("1/2")) //  = 1/2
 new Fraction("1/2", 2) //  = 1/4
 new Fraction(.5, .5)   //  = 5/5
+new Fraction(1)        //  = 1/1
 new Fraction()         //  = 0/1
 new Fraction(1, 0)     //  err: ZeroDivisionError
 
-new Fraction(.111111111111111111111111111111111)   //  = 1111111111111111/10000000000000000
-new Fraction(".111111111111111111111111111111111") //  = 111111111111111111111111111111111/1000000000000000000000000000000000
+new Fraction(.11111111111111111111111111111)   //  = 1111111111111111/10000000000000000
+new Fraction(".11111111111111111111111111111") //  = 11111111111111111111111111111/1000000000000000000000000000000000
 ```
 
 ## Properties
@@ -39,17 +42,19 @@ new Fraction(".111111111111111111111111111111111") //  = 11111111111111111111111
 
 ## Inequality/inequality
 * Equals
-    * `.eq()` (mimics `==`)
+    * `.eq( value )` (mimics `==`)
 * Strictly Equals
-    * `.seq()` (mimics `===`)
+    * `.seq( value )` (mimics `===`)
 * Less Than
-    * `.lt()` (mimics `<`)
+    * `.lt( value )` (mimics `<`)
 * Less Than or Equals
-    * `.lteq()` (mimics `<=`)
+    * `.lteq( value )` (mimics `<=`)
 * Greater Than
-    * `.gt()` (mimics `>`)
+    * `.gt( value )` (mimics `>`)
 * Greater Than or Equals
-    * `.gteq()` (mimics `>=`)
+    * `.gteq( value )` (mimics `>=`)
+
+> `value` can only be of type number, Fraction, bigint, or [parsebale string](#fractionparsefraction).
 
 ### Examples
 
@@ -64,19 +69,19 @@ new Fraction(1, 2).seq(new Fraction("1/2")) // => true
 
 ## Arithmatic
 * Addition
-    * `.plus()` (mimics `+`)
+    * `.plus( addend )` (mimics `+`)
 * Subtraction
-    * `.minus()` (mimics `-`)
+    * `.minus( subtrahend )` (mimics `-`)
 * Multiplication
-    * `.times()` (mimics `*`)
+    * `.times( multiplicidad )` (mimics `*`)
 * Division
-    * `.divide()` (mimics `/`)
+    * `.divide( dividend )` (mimics `/`)
 
 * Exponentiation
-    * `Fraction.pow()` (mimics `Math.pow()`)
-    * Only accepts Fractions as first input and integers as second
+    * `Fraction.pow( fraction ,  exponent )` (mimics `Math.pow()`)
+    * Only accepts Fractions as first input and integers (including BigInts) as second
 * Absolution
-    * `Fraction.abs()` (mimics `Math.abs()`)
+    * `Fraction.abs( fraction )` (mimics `Math.abs()`)
     * Only accepts Fractions as input
 
 * Reciprocation
