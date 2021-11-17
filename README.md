@@ -54,8 +54,6 @@ new Fraction(".11111111111111111111111111111") //  = 111111111111111111111111111
 * Greater Than or Equals
     * `.gteq( value )` (mimics `>=`)
 
-> `value` can only be of type number, Fraction, bigint, or [parsebale string](#fractionparsefraction).
-
 ### Examples
 
 ```Javascript
@@ -76,6 +74,8 @@ new Fraction(1, 2).seq(new Fraction("1/2")) // => true
     * `.times( multiplicidad )` (mimics `*`)
 * Division
     * `.divide( dividend )` (mimics `/`)
+
+> Parameters can only be of type number, Fraction, bigint, or [parsebale string](#fractionparsefraction).
 
 * Exponentiation
     * `Fraction.pow( fraction ,  exponent )` (mimics `Math.pow()`)
