@@ -241,8 +241,9 @@ export default class Fraction {
 	}
 
 	valueOf(): number {
-		// temporary
-		return Number(this.#_Numerator) / Number(this.#_Denominator)
+		let whole = this.#_Numerator / this.#_Denominator,
+			decimal = `${this.#_Numerator * 1000000000000000000000000n / this.#_Denominator}`.substr(-24);
+		return Number.parseFloat(`${whole}.${decimal}`)
 	}
 
 	static #gcd(a: bigint, b: bigint): bigint {
