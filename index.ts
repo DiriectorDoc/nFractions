@@ -112,7 +112,7 @@ export default class Fraction {
 	get denominator(){return this.#_Denominator}
 
 	get isNaN(){return typeof this.#_Numerator != "bigint" || typeof this.#_Denominator != "bigint"}
-	get isNegative(){return this.#_Numerator != 0n || this.#_Numerator < 0 != this.#_Denominator < 0}
+	get isNegative(){return this.#_Numerator == 0n || this.#_Numerator < 0 != this.#_Denominator < 0}
 
 	get negative(){return new Fraction(-this.#_Numerator, this.#_Denominator)}
 
