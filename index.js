@@ -48,7 +48,7 @@ class Fraction {
             default:
                 throw new TypeError(`Cannot use value ${denominator} as a denominator`);
         }
-        if (denominator === 0n)
+        if (this.#denominator === 0n)
             throw new Fraction.ZeroDivisionError;
         switch (typeof numerator) {
             case "bigint":
@@ -309,28 +309,27 @@ class Fraction {
         if (/^-?\d+$/.test(str)) {
             return BigInt(str);
         }
-        let match;
         if (/^(-?0?|-?[1-9]\d*(_\d+)*)\.\d+(_\d+)*(e[+-]?\d+(_\d+)*)?$/i.test(str)) {
             str = str.replaceAll("_", "");
             if (+str === 0) {
                 return 0n;
             }
-            match = /^(?<whole>-?0?|-?[1-9]\d*)(?<decimal>\.\d+)(?<exponent>(e[+-]?\d+)?)$/i.exec(str);
+            let groups = /^(?<whole>-?0?|-?[1-9]\d*)(?<decimal>\.\d+)(?<exponent>(e[+-]?\d+)?)$/i.exec(str).groups;
             let num = "", den = "1";
-            if (match.whole && match.whole !== "0") {
-                num = match.whole === "-0" ? "-" : match.whole;
+            if (groups.whole && groups.whole !== "0") {
+                num = groups.whole === "-0" ? "-" : groups.whole;
             }
-            num += match.decimal.substring(1);
-            if (match.exponent) {
-                let exp = /\d+/.exec(match.exponent)[0];
-                if (match.exponent[1] === "-") {
+            num += groups.decimal.substring(1);
+            if (groups.exponent) {
+                let exp = /\d+/.exec(groups.exponent)[0];
+                if (groups.exponent[1] === "-") {
                     den += Array(+exp).fill(0).join("");
                 }
                 else {
                     num += Array(+exp).fill(0).join("");
                 }
             }
-            den += Array(match.decimal.length - 1).fill(0).join("");
+            den += Array(groups.decimal.length - 1).fill(0).join("");
             return new Fraction(BigInt(num), BigInt(den));
         }
         if (/^-?0x[0-9a-f]+(_[0-9a-f]+)*$/i.test(str) ||
