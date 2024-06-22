@@ -1,4 +1,6 @@
-export default class Fraction {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class Fraction {
     #numerator;
     #denominator;
     static get NaN() {
@@ -412,3 +414,4 @@ export default class Fraction {
         return Fraction.NaN;
     }
 }
+exports.default = Fraction;
