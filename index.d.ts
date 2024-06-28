@@ -15,7 +15,7 @@ export default class Fraction {
     get negative(): Fraction;
     get whole(): bigint;
     eq(frac: AnyNumber): boolean;
-    seq(frac: AnyNumber): boolean;
+    seq(frac: Fraction): boolean;
     lt(frac: AnyNumber): boolean;
     lteq(frac: AnyNumber): boolean;
     gt(frac: AnyNumber): boolean;
@@ -24,8 +24,9 @@ export default class Fraction {
     fixNegative(): this;
     get reciprocal(): Fraction;
     reciprocate(): this;
+    get remainder(): bigint;
     clone(): Fraction;
-    scaleTo(factor: bigint | number): this;
+    scaleTo(factor: AnyInteger): this;
     plus(addend: AnyNumber): Fraction;
     minus(subtrahend: AnyNumber): Fraction;
     times(multiplicand: AnyNumber): Fraction;

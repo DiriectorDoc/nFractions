@@ -4,10 +4,10 @@ class Fraction {
     #numerator;
     #denominator;
     static get NaN() {
-        let frac = new Fraction();
+        let nan = new Fraction();
         // @ts-ignore
         [nan.#denominator, nan.#numerator] = [NaN, NaN];
-        return frac;
+        return nan;
     }
     static get ONE() {
         return new Fraction(1n);
@@ -118,7 +118,13 @@ class Fraction {
         }
     }
     seq(frac) {
-        return frac instanceof Fraction && this.eq(frac);
+        if (frac instanceof Fraction) {
+            let f1 = this.clone().reduce(), f2 = frac.clone().reduce();
+            return f1.#numerator === f2.#numerator && f1.#denominator === f2.#denominator;
+        }
+        else {
+            return false;
+        }
     }
     lt(frac) {
         if (!Fraction.#typeCheck(frac))
@@ -163,38 +169,44 @@ class Fraction {
         return this;
     }
     fixNegative() {
-        if (this.isNegative && this.#denominator < 0n) {
+        if (this.#denominator < 0n) {
             this.#denominator *= -1n;
             this.#numerator *= -1n;
         }
         return this;
     }
     get reciprocal() {
+        if (this.#numerator === 0n)
+            throw new Fraction.ZeroDivisionError;
         return new Fraction(this.#denominator, this.#numerator);
     }
     reciprocate() {
-        if (this.#numerator == 0n)
+        if (this.#numerator === 0n)
             throw new Fraction.ZeroDivisionError;
         [this.#numerator, this.#denominator] = [this.#denominator, this.#numerator];
         return this;
+    }
+    get remainder() {
+        return this.#numerator % this.#denominator;
     }
     clone() {
         return new Fraction(this.#numerator, this.#denominator);
     }
     scaleTo(factor) {
-        this.#numerator *= BigInt(factor);
-        this.#denominator *= BigInt(factor);
+        let d = Fraction.#toInt(factor);
+        this.#numerator *= d;
+        this.#denominator *= d;
         return this;
     }
     plus(addend) {
-        Fraction.#typeCheck(addend, true);
+        Fraction.#assertNumber(addend);
         if (!(addend instanceof Fraction))
             addend = new Fraction(addend, 1n);
-        let lcmRatio = (this.#denominator * addend.#denominator) / Fraction.#lcm(this.#denominator, addend.#denominator);
-        return new Fraction((this.#numerator * addend.#denominator + addend.#numerator * this.#denominator) / lcmRatio, this.#denominator * addend.#denominator / lcmRatio);
+        let gcd = Fraction.#gcd(this.#denominator, addend.#denominator);
+        return new Fraction((this.#numerator * addend.#denominator + addend.#numerator * this.#denominator) / gcd, this.#denominator * addend.#denominator / gcd);
     }
     minus(subtrahend) {
-        Fraction.#typeCheck(subtrahend, true);
+        Fraction.#assertNumber(subtrahend);
         return this.negative.plus(subtrahend).negative.fixNegative();
     }
     times(multiplicand) {
@@ -205,7 +217,8 @@ class Fraction {
         }
         switch (typeof multiplicand) {
             case "bigint":
-                return new Fraction(this.#numerator * multiplicand, this.#denominator).reduce();
+                let temp = new Fraction(multiplicand, this.#denominator).reduce();
+                return new Fraction(this.#numerator * temp.#numerator, temp.#denominator);
             default:
                 if (multiplicand instanceof Fraction) {
                     return new Fraction(this.#numerator * multiplicand.#numerator, this.#denominator * multiplicand.#denominator).reduce();
@@ -214,7 +227,7 @@ class Fraction {
         throw new TypeError(`Cannot accept \`${multiplicand}\` as an input`);
     }
     divide(divisor) {
-        Fraction.#typeCheck(divisor, true);
+        Fraction.#assertNumber(divisor);
         if (Fraction.#isZero(divisor))
             throw new Fraction.ZeroDivisionError;
         if (!(divisor instanceof Fraction))
@@ -258,54 +271,44 @@ class Fraction {
             [a, b] = [b, a];
         }
         while (true) {
-            if (b == 0n)
+            if (b === 0n)
                 return a;
             a %= b;
-            if (a == 0n)
+            if (a === 0n)
                 return b;
             b %= a;
         }
     }
-    static #lcm(a, b) {
-        return (a * b) / Fraction.#gcd(a, b);
-    }
-    static #typeCheck(inp, thro) {
-        let result;
+    // static #lcm(a: bigint, b: bigint): bigint {
+    // 	return (a * b) / Fraction.#gcd(a, b)
+    // }
+    static #typeCheck(inp) {
         switch (typeof inp) {
             case "object":
-                result = inp instanceof Fraction;
-                break;
+                return inp instanceof Fraction;
             case "string":
-                if (/^\s*-?\s*\d+\s*$/.test(inp) ||
-                    /^\s*(-?\s*0?|-?\s*[1-9]\d*(_\d+)*)\.\d+(_\d+)*(e[+-]?\d+(_\d+)*)?\s*$/i.test(inp) ||
-                    /^\s*-?\s*0x[0-9a-f]+(_[0-9a-f]+)*\s*$/i.test(inp) ||
-                    /^\s*-?\s*0b[01]+(_[01]+)*$/i.test(inp) ||
-                    /^\s*-?\s*0o[0-7]+(_[0-7]+)*$/i.test(inp)) {
-                    return true;
-                }
-                else if (thro) {
-                    throw new TypeError(`"${inp}" Cannot be parsed into a number; As such, it cannot be accepted an input`);
-                }
-                else {
-                    return false;
-                }
+                return /^\s*[+-]?\s*\d+\s*$/.test(inp) ||
+                    /^\s*([+-]?\s*0?|-?\s*[1-9]\d*(_\d+)*)\.\d+(_\d+)*(e[+-]?\d+(_\d+)*)?\s*$/i.test(inp) ||
+                    /^\s*[+-]?\s*0x[0-9a-f]+(_[0-9a-f]+)*\s*$/i.test(inp) ||
+                    /^\s*[+-]?\s*0b[01]+(_[01]+)*$/i.test(inp) ||
+                    /^\s*[+-]?\s*0o[0-7]+(_[0-7]+)*$/i.test(inp);
             case "number":
             case "bigint":
-                result = true;
-                break;
+                return true;
             default:
-                result = false;
-                break;
+                return false;
         }
-        if (!result && thro)
-            throw new TypeError(`Cannot accept ${inp} as an input`);
-        return result;
+    }
+    static #assertNumber(inp) {
+        if (Fraction.#typeCheck(inp))
+            return;
+        throw new TypeError(`${"string" == typeof inp ? `"${inp}"` : `\`${inp}\``} Cannot be parsed into a number; As such, it cannot be accepted an input`);
     }
     static #parseNumber(str) {
         if ("number" == typeof str)
             str = str.toString();
         else
-            str = str.replaceAll(" ", "");
+            str = str.replaceAll(/\s/g, "").replace(/^\+/, "");
         if (/^-?\d+$/.test(str)) {
             return BigInt(str);
         }
@@ -397,7 +400,8 @@ class Fraction {
                 exponent = Fraction.#toInt(exponent);
             }
             catch (err) {
-                console.error(new TypeError("Fractions can only be exponentiated by integers"));
+                if (err instanceof Fraction.IntegerExpectedError)
+                    console.error(new TypeError("Fractions can only be exponentiated by integers"));
                 throw err;
             }
             return exponent < 0n ? new Fraction(frac.#denominator ** -exponent, frac.#numerator ** -exponent) : new Fraction(frac.#numerator ** exponent, frac.#denominator ** exponent);
@@ -406,9 +410,10 @@ class Fraction {
     }
     ;
     static parseFraction(str) {
-        if (typeof str == "string") {
-            let parts = str.split("/");
-            return parts[1] ? new Fraction(parts[0], parts[1]) : Fraction.NaN;
+        let match;
+        if ((match = /^\s*(.+)\s*[:\/]\s*(.+)\s*$/.exec(str)) ||
+            (match = /^\s*\\frac\s*\{(.+)\}\s*\{(.+)\}\s*$/m.exec(str))) {
+            return new Fraction(Fraction.#parseNumber(match[1]), Fraction.#parseNumber(match[2]));
         }
         return Fraction.NaN;
     }

@@ -100,16 +100,6 @@ Acts as `NaN` as a fraction. Math and comparisons cannot be done with it.
 
 Will not throw an error if the input is not a string. May throw a ZeroDivisionError.
 
-### `Fraction.random()`
-Returns a random fraction from [0, 1). Each fraction will have a random numerator and denominator.
-
-```Javascript
-Fraction.random()
-```
-
-* Theoretical max: (2^13 - 1)/2^31
-* Theoretical non-zero min: 1/2^31
-
 ### `Fraction.parseFraction()`
 Accepts only strings. Will always return a Fraction or Fraction.NaN. Will return whatever fraction is within the string.
 
