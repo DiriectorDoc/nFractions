@@ -75,7 +75,7 @@ new Fraction(1, 2).seq(new Fraction(1/2)) // => true
 * Division
     * `.divide( dividend )` (mimics `/`)
 
-> Parameters can only be of type number, Fraction, bigint, or [parsebale string](#fractionparsefraction).
+> Parameters can only be of type number, Fraction, bigint, or number-like string.
 
 * Exponentiation
     * `Fraction.pow( fraction ,  exponent )` (mimics `Math.pow()`)
