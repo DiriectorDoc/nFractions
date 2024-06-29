@@ -40,3 +40,4 @@
 * `Fraction.RationalExponentError` no longer exists
 	* `Fraction.pow()` now throws `Fraction.IntegerExpectedError` if exponent parameter is not an integer
 * `Fraction.random()` was removed as it was not mathematically sound
+* `Fraction` constructor will no longer parse fraction-like strings

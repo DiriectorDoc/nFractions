@@ -17,9 +17,8 @@ new Fraction(1, 2)     //  = 1/2
 new Fraction(2n, 4n)   //  = 2/4
 new Fraction("1", "2") //  = 1/2
 new Fraction("1", -2n) //  = 1/-2
-new Fraction("1/2")    //  = 1/2
-new Fraction(new Fraction("1/2")) //  = 1/2
-new Fraction("1/2", 2) //  = 1/4
+new Fraction(new Fraction(1, 2)) //  = 1/2
+new Fraction(new Fraction(1, 2), 2) //  = 1/4
 new Fraction(.5, .5)   //  = 5/5
 new Fraction(1)        //  = 1/1
 new Fraction()         //  = 0/1
@@ -39,6 +38,7 @@ new Fraction(".11111111111111111111111111111") //  = 111111111111111111111111111
 * `.reciprocal`: Fraction
     * Returns the reciprical. <u>Does not change the value of the variable.</u>
 * `.whole`: BigInt
+* `.remainder`: BigInt
 
 ## Inequality/inequality
 * Equals
@@ -60,9 +60,9 @@ new Fraction(".11111111111111111111111111111") //  = 111111111111111111111111111
 new Fraction(1, 2).lt(1n)      // => true
 new Fraction(1, 2).gt(.5)      // => false
 new Fraction(1, 2).lteq("foo") // => false
-new Fraction(1, 2).eq("1/2")   // => true
-new Fraction(1, 2).seq("1/2")  // => false
-new Fraction(1, 2).seq(new Fraction("1/2")) // => true
+new Fraction(1, 2).eq(1/2)   // => true
+new Fraction(1, 2).seq(1/2)  // => false
+new Fraction(1, 2).seq(new Fraction(1/2)) // => true
 ```
 
 ## Arithmatic
