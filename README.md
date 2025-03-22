@@ -1,12 +1,10 @@
 # nFractions
-Creates fractions using BigInts.
-
-
+Creates fractions using BigInts. These fraction have arbitrary precision and can be as precise as needed.
 
 ## Syntax
 
 ```javascript
-new Fraction(  numerator,  denominator  )
+new Fraction( numerator,  denominator )
 ```
 
 * `numerator`: string, number, bigint, Fraction (default: 0)
@@ -15,8 +13,12 @@ new Fraction(  numerator,  denominator  )
 ```javascript
 new Fraction(1, 2)     //  = 1/2
 new Fraction(2n, 4n)   //  = 2/4
+new Fraction([1, 2])   //  = 1/2
+new Fraction([2n, 4n]) //  = 2/4
+new Fraction([1, 2], [1, 2]) //  = 2/2
 new Fraction("1", "2") //  = 1/2
 new Fraction("1", -2n) //  = 1/-2
+new Fraction("1.5", 2) //  = 3/4
 new Fraction(new Fraction(1, 2)) //  = 1/2
 new Fraction(new Fraction(1, 2), 2) //  = 1/4
 new Fraction(.5, .5)   //  = 5/5
@@ -44,7 +46,7 @@ new Fraction(".11111111111111111111111111111") //  = 111111111111111111111111111
 * Equals
     * `.eq( value )` (mimics `==`)
 * Strictly Equals
-    * `.seq( value )` (mimics `===`)
+    * `.seq( value )` (mimics `===`) (will always be false when comparing a Fraction to a non-Fraction)
 * Less Than
     * `.lt( value )` (mimics `<`)
 * Less Than or Equals
@@ -112,3 +114,36 @@ Fraction.parseFraction("1/0")     // err: ZeroDivisionError
 Fraction.parseFraction(6)         // => NaN
 Fraction.parseFraction("foo")     // => NaN
 ```
+
+## FracMath Methods
+The `FracMath` object provides various mathematical operations for working with fractions.
+
+- `toInt(num: AnyNumber)`: Converts a number to a `bigint`.
+- `pow(frac: AnyNumber, exponent: AnyNumber)`: Raises a fraction to a given exponent.
+- `abs(frac: AnyNumber)`: Returns the absolute value of a number.
+- `qlog(int: bigint)`: Computes the quick logarithm of a `bigint`.
+- `factorial(n: AnyInteger)`: Computes the factorial of an integer.
+- `sin(x: AnyNumber)`, `cos(x: AnyNumber)`, `tan(x: AnyNumber)`: Compute trigonometric functions for fractions.
+- `sqrt(x: AnyNumber, guess: AnyNumber)`: Computes the square root of a fraction using an initial guess.
+- `round(frac: FractionLike)`, `floor(frac: FractionLike)`, `ceil(frac: FractionLike)`: Round a fraction to the nearest integer, floor it, or ceil it.
+- `exp(x: AnyNumber)`: Computes the exponential function of a fraction.
+- `ln(x: AnyNumber)`, `log(x: AnyNumber)`: Compute the natural and base-10 logarithms of a fraction.
+- `random()`: Generates a random fraction.
+- `max(first: AnyNumber, ...args: AnyNumber[])`, `min(first: AnyNumber, ...args: AnyNumber[])`: Find the maximum or minimum of a set of numbers.
+- `trunc(frac: FractionLike)`: Truncates a fraction to its integer part.
+
+All of these use the property `FracMath.accuracy`, a number that determines how accurate each function will be. By default, the accuracy is 200. This will give 
+
+### Mathematical Constants
+`FracMath` also defines common mathematical constants as `Fraction` values:
+- `PI`: The mathematical constant π.
+- `E`: Euler's number.
+- `SQRT2`: The square root of 2.
+- `SQRT1_2`: The square root of 1/2.
+- `PHI`: The golden ratio.
+- `LN10`: The natural logarithm of 10.
+- `LOG10_E`: The base-10 logarithm of Euler’s number.
+- `LOG2_E`: The base-2 logarithm of Euler’s number.
+- `LN2`: The natural logarithm of 2.
+
+Each property will create a new Fraction. These values cannot be changed. Each constant is accurate to at least 4500 decimal places.
