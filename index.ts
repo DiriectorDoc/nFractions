@@ -625,8 +625,12 @@ export const FracMath = ((obj) => {
 		ln(x: AnyNumber): Fraction {
 			if(new Fraction(x).isNegative) throw new TypeError(`Cannot perfor logarithms on negative numbers.`);
 			if(x[Symbol.for("nfrac-semanticKey")] === "e") return Fraction.ONE;
-			let ac = 2n**FracMath.toInt(FracMath.accuracy);
-			return FracMath.pow(x, new Fraction(1n, ac)).minus(1n).times(ac)
+			let sum = new Fraction;
+			for(let i = 1n; i <= 12n; i++){
+				sum = FracMath.pow(sum.minus(1n).divide(sum.plus(1n)), 2n*i-1n).divide(2n*i-1n)
+			}
+			sum = sum.times(2n);
+			return sum.minus(1n).plus(new Fraction(x, FracMath.exp(sum)))
 		},
 		// gamma(z: AnyNumber): Fraction {
 		// 	z = Fraction.ONE.plus(z);
@@ -639,8 +643,7 @@ export const FracMath = ((obj) => {
 		log(x: AnyNumber): Fraction {
 			if(new Fraction(x).isNegative) throw new TypeError(`Cannot perfor logarithms on negative numbers.`);
 			if(/^10*$/.test(x.toString())) return new Fraction(FracMath.qlog(FracMath.toInt(x)) - 1);
-			let ac = 2n**FracMath.toInt(FracMath.accuracy);
-			return FracMath.pow(x, new Fraction(1n, ac)).minus(1n).times(ac).divide(FracMath.LN10)
+			return FracMath.ln(x).divide(FracMath.LN10)
 		},
 		random: () => new Fraction(Math.random()),
 		max: (first: AnyNumber, ...args: AnyNumber[]) => {
